@@ -58,3 +58,12 @@ func (store *TaskStore) UpdateTask(taskID int, newDescription string) (*TaskStor
 	task.Description = newDescription
 	return store, nil
 }
+
+func (store *TaskStore) DeleteTask(taskID int) (*TaskStore, error) {
+	_, ok := store.Tasks[taskID]
+	if !ok {
+		return store, errors.New("задачи с таким id нет!")
+	}
+	delete(store.Tasks, taskID)
+	return store, nil
+}

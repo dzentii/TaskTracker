@@ -32,5 +32,10 @@ func main() {
 	if err != nil {
 		fmt.Printf("ошибка обновления задачи: %v\n", err)
 	}
+
+	newStore, err = newStore.DeleteTask(2)
+	if err != nil {
+		fmt.Printf("ошибка обновления задачи: %v\n", err)
+	}
 	pp.Println(newStore)
 }
