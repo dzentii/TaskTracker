@@ -67,3 +67,15 @@ func (store *TaskStore) DeleteTask(taskID int) (*TaskStore, error) {
 	delete(store.Tasks, taskID)
 	return store, nil
 }
+
+func (store *TaskStore) ChangeStatus(taskID int, newStatus string) (*TaskStore, error) {
+	if newStatus != StatusTodo && newStatus != StatusInProgress && newStatus != StatusDone {
+		return store, errors.New("такого статуса не существует!")
+	}
+	task, ok := store.Tasks[taskID]
+	if !ok {
+		return store, errors.New("задачи с таким id нет!")
+	}
+	task.Status = newStatus
+	return store, nil
+}
