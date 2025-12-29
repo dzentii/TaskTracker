@@ -1,0 +1,47 @@
+{
+  "tasks": {
+    "1": {
+      "id": 1,
+      "description": "skdoaspkdfsopdakfopewf",
+      "status": "todo",
+      "createdAt": "2025-12-29 23:55:09",
+      "updatedAt": "2025-12-29 23:55:09"
+    },
+    "2": {
+      "id": 2,
+      "description": "sdokfpksdfopekrwfpoer",
+      "status": "todo",
+      "createdAt": "2025-12-29 23:55:14",
+      "updatedAt": "2025-12-29 23:55:14"
+    },
+    "3": {
+      "id": 3,
+      "description": "wepofiiejkwiofpjeqwiofew",
+      "status": "todo",
+      "createdAt": "2025-12-29 23:55:16",
+      "updatedAt": "2025-12-29 23:55:16"
+    },
+    "4": {
+      "id": 4,
+      "description": "weowepfjkweiofjweifojwewfi",
+      "status": "todo",
+      "createdAt": "2025-12-29 23:55:35",
+      "updatedAt": "2025-12-29 23:55:35"
+    },
+    "5": {
+      "id": 5,
+      "description": "ajkfsdkfsadlkfj sdaklfjasdlkfjs lkjsadlfkjsdlfkjsf",
+      "status": "todo",
+      "createdAt": "2025-12-30 00:00:18",
+      "updatedAt": "2025-12-30 00:00:18"
+    },
+    "6": {
+      "id": 6,
+      "description": "sfkweopkro pkjwejriqwje ijvifdjioerqjtiopjti iperjgdfiogdf",
+      "status": "todo",
+      "createdAt": "2025-12-30 00:00:26",
+      "updatedAt": "2025-12-30 00:00:26"
+    }
+  },
+  "nextId": 7
+}

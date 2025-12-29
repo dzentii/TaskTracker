@@ -21,7 +21,7 @@ type Task struct {
 
 type TaskStore struct {
 	Tasks  map[int]*Task `json:"tasks"`
-	NextID int           `json:"-"`
+	NextID int           `json:"nextId"`
 }
 
 func NewTaskStore() *TaskStore {
