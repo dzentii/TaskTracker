@@ -33,9 +33,9 @@ outherLoop:
 		case "2":
 			*store = updateTask(*store)
 			continue
-		// case "3":
-		// 	deleteTask()
-		// 	continue
+		case "3":
+			*store = deleteTask(*store)
+			continue
 		// case "4":
 		// 	changeStatus()
 		// 	continue
@@ -136,11 +136,47 @@ func updateTask(store tasks.TaskStore) tasks.TaskStore {
 	}
 }
 
-// func deleteTask() {
-// 	for {
-// 		input := ScanUserInput()
-// 	}
-// }
+func deleteTask(store tasks.TaskStore) tasks.TaskStore {
+	for {
+		fmt.Println("\nНапишите id задачи, которую хотите удалить: ")
+		id := strings.TrimSpace(ScanUserInput())
+		if id == "exit" {
+			return store
+		}
+		intId, err := strconv.Atoi(id)
+		if err != nil {
+			fmt.Println("id может быть только в виде числа: ", err)
+			continue
+		}
+		task, ok := store.Tasks[intId]
+		if !ok {
+			fmt.Println("Задачи с таким id нет!")
+			continue
+		}
+		fmt.Printf("\nВы хотите удалить задачу с id %d?\nЗадача: %s\nСтатус: %s\nСоздана: %s\nОбновлена: %s\n", task.ID, task.Description, task.Status, task.CreatedAt, task.UpdatedAt)
+		for {
+			fmt.Println("1. Да.\n2. Нет")
+			input := strings.TrimSpace(ScanUserInput())
+			if input == "1" {
+				fmt.Println("Удаление задачи...")
+				newStore, deleteErr := store.DeleteTask(task.ID)
+				if deleteErr != nil {
+					fmt.Println("ошибка удаления задачи:", err)
+					continue
+				}
+				fmt.Println("Задача удалена!")
+				return *newStore
+			} else if input == "2" {
+				break
+			} else {
+				fmt.Println("Введите 1 или 2: ")
+				continue
+			}
+		}
+		return store
+
+	}
+}
 
 // func changeStatus() {
 // 	for {
