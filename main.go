@@ -8,11 +8,12 @@ import (
 	"io"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 	"tasktracker/tasks"
 )
 
-const mainMenu = ("Выберите действие(введите цифру в консоль):\n1. Добавить задачу.\n2. Обновить задачу.\n3. Удалить задачу.\n4. Поменять статус задачи.\n5. Показать все задачи.\n6. Показать все выполненные задачи.\n7. Показать все невыполненные задачи.\n8. Показать все задачи в процессе выполнения.\n9. Выход из программы.")
+const mainMenu = ("\nВыберите действие(введите цифру в консоль):\n1. Добавить задачу.\n2. Обновить задачу.\n3. Удалить задачу.\n4. Поменять статус задачи.\n5. Показать все задачи.\n6. Показать все выполненные задачи.\n7. Показать все невыполненные задачи.\n8. Показать все задачи в процессе выполнения.\n9. Выход из программы.")
 
 func main() {
 	filename := "tasks.json"
@@ -29,9 +30,9 @@ outherLoop:
 		case "1":
 			*store = createTask(*store)
 			continue
-		// case "2":
-		// 	updateTask()
-		// 	continue
+		case "2":
+			*store = updateTask(*store)
+			continue
 		// case "3":
 		// 	deleteTask()
 		// 	continue
@@ -52,17 +53,13 @@ outherLoop:
 		// 	continue
 		case "9":
 			writeFile(filename, *store)
+			fmt.Println("Завершение программы...")
 			break outherLoop
 		default:
 			fmt.Println("Такого пункта нет! Введи число от 1 до 9.")
 			continue
 		}
 	}
-
-	// newStore, err := store.NewTask("do")
-	// if err != nil {
-	// 	fmt.Printf("ошибка создания задачи: %v\n", err)
-	// }
 }
 
 func readFile(filename string) (*tasks.TaskStore, error) {
@@ -83,7 +80,7 @@ func readFile(filename string) (*tasks.TaskStore, error) {
 
 func createTask(store tasks.TaskStore) tasks.TaskStore {
 	for {
-		fmt.Println("Напишите задачу, которую необходимо выполнить: ")
+		fmt.Println("\nНапишите задачу, которую необходимо выполнить: ")
 		input := strings.TrimSpace(ScanUserInput())
 		if input == "exit" {
 			return store
@@ -93,15 +90,51 @@ func createTask(store tasks.TaskStore) tasks.TaskStore {
 			fmt.Printf("ошибка создания задачи, %s\n", err)
 			continue
 		}
+		fmt.Println("Задача успешно создана!")
 		return *newStore
 	}
 }
 
-// func updateTask(store tasks.TaskStore) {
-// 	for {
-// 		input := ScanUserInput()
-// 	}
-// }
+func updateTask(store tasks.TaskStore) tasks.TaskStore {
+	for {
+		fmt.Println("\nНапишите id задачи, которую хотите обновить: ")
+		id := strings.TrimSpace(ScanUserInput())
+		if id == "exit" {
+			return store
+		}
+		intId, err := strconv.Atoi(id)
+		if err != nil {
+			fmt.Println("id может быть только в виде числа: ", err)
+			continue
+		}
+		task, ok := store.Tasks[intId]
+		if !ok {
+			fmt.Println("Задачи с таким id нет!")
+			continue
+		}
+		fmt.Printf("\nВы хотите обновить задачу с id %d?\nЗадача: %s\nСтатус: %s\nСоздана: %s\nОбновлена: %s\n", task.ID, task.Description, task.Status, task.CreatedAt, task.UpdatedAt)
+		for {
+			fmt.Println("1. Да.\n2. Нет")
+			input := strings.TrimSpace(ScanUserInput())
+			if input == "1" {
+				fmt.Println("\nВведите новое описание задачи: ")
+				description := strings.TrimSpace(ScanUserInput())
+				newStore, err := store.UpdateTask(intId, description)
+				if err != nil {
+					fmt.Println("ошибка обновления задачи: ", err)
+					continue
+				}
+				fmt.Println("Задача успешно обновлена!")
+				return *newStore
+			} else if input == "2" {
+				break
+			} else {
+				fmt.Println("Введите 1 или 2: ")
+				continue
+			}
+		}
+	}
+}
 
 // func deleteTask() {
 // 	for {

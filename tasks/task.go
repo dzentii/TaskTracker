@@ -56,6 +56,7 @@ func (store *TaskStore) UpdateTask(taskID int, newDescription string) (*TaskStor
 		return store, errors.New("задачи с таким id нет!")
 	}
 	task.Description = newDescription
+	task.UpdatedAt = time.Now().String()[:19]
 	return store, nil
 }
 
@@ -77,5 +78,6 @@ func (store *TaskStore) ChangeStatus(taskID int, newStatus string) (*TaskStore, 
 		return store, errors.New("задачи с таким id нет!")
 	}
 	task.Status = newStatus
+	task.UpdatedAt = time.Now().String()[:19]
 	return store, nil
 }
