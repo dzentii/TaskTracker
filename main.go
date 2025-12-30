@@ -36,21 +36,21 @@ outherLoop:
 		case "3":
 			*store = deleteTask(*store)
 			continue
-		// case "4":
-		// 	changeStatus()
-		// 	continue
-		// case "5":
-		// 	getAll()
-		// 	continue
-		// case "6":
-		// 	getAllDone()
-		// 	continue
-		// case "7":
-		// 	getAllTodo()
-		// 	continue
-		// case "8":
-		// 	getAllInProgress()
-		// 	continue
+		case "4":
+			*store = changeStatus(*store)
+			continue
+		case "5":
+			getAll(*store)
+			continue
+		case "6":
+			getAllDone(*store)
+			continue
+		case "7":
+			getAllTodo(*store)
+			continue
+		case "8":
+			getAllInProgress(*store)
+			continue
 		case "9":
 			writeFile(filename, *store)
 			fmt.Println("Завершение программы...")
@@ -178,35 +178,91 @@ func deleteTask(store tasks.TaskStore) tasks.TaskStore {
 	}
 }
 
-// func changeStatus() {
-// 	for {
-// 		input := ScanUserInput()
-// 	}
-// }
+func changeStatus(store tasks.TaskStore) tasks.TaskStore {
+	for {
+		fmt.Println("\nНапишите id задачи, для которой хотите обновить статус: ")
+		id := strings.TrimSpace(ScanUserInput())
+		if id == "exit" {
+			return store
+		}
+		intId, err := strconv.Atoi(id)
+		if err != nil {
+			fmt.Println("id может быть только в виде числа: ", err)
+			continue
+		}
+		task, ok := store.Tasks[intId]
+		if !ok {
+			fmt.Println("Задачи с таким id нет!")
+			continue
+		}
+		fmt.Printf("\nВы хотите обновить статус для задачи с id %d?\nЗадача: %s\nСтатус: %s\nСоздана: %s\nОбновлена: %s\n", task.ID, task.Description, task.Status, task.CreatedAt, task.UpdatedAt)
+		for {
+			fmt.Println("1. Да.\n2. Нет")
+			input := strings.TrimSpace(ScanUserInput())
+			if input == "1" {
+				fmt.Println("\nВыберите новый статус: \n1. Необходимо выполнить.\n2. В процессе выполнения\n3. Выполнена.")
+				var status string
+				for {
+					inputStatus := strings.TrimSpace(ScanUserInput())
+					switch inputStatus {
+					case "1":
+						status = tasks.StatusTodo
+					case "2":
+						status = tasks.StatusInProgress
+					case "3":
+						status = tasks.StatusDone
+					default:
+						fmt.Println("Ошибка! Введите номер статуса!")
+						continue
+					}
+					break
+				}
+				newStore, err := store.ChangeStatus(intId, status)
+				if err != nil {
+					fmt.Println("ошибка обновления статуса: ", err)
+					continue
+				}
+				fmt.Println("Статус успешно обновлен!")
+				return *newStore
+			} else if input == "2" {
+				break
+			} else {
+				fmt.Println("Введите 1 или 2: ")
+				continue
+			}
+		}
+	}
+}
 
-// func getAll() {
-// 	for {
-// 		input := ScanUserInput()
-// 	}
-// }
+func getAll(store tasks.TaskStore) {
+	for _, task := range store.Tasks {
+		fmt.Printf("\nID задачи: %d\nОписание задачи: %s\nСтатус выполнения: %s\nДата создания: %s\nДата обновления: %s\n", task.ID, task.Description, task.Status, task.CreatedAt, task.UpdatedAt)
+	}
+}
 
-// func getAllDone() {
-// 	for {
-// 		input := ScanUserInput()
-// 	}
-// }
+func getAllDone(store tasks.TaskStore) {
+	for _, task := range store.Tasks {
+		if task.Status == tasks.StatusDone {
+			fmt.Printf("\nID задачи: %d\nОписание задачи: %s\nСтатус выполнения: %s\nДата создания: %s\nДата обновления: %s\n", task.ID, task.Description, task.Status, task.CreatedAt, task.UpdatedAt)
+		}
+	}
+}
 
-// func getAllTodo() {
-// 	for {
-// 		input := ScanUserInput()
-// 	}
-// }
+func getAllTodo(store tasks.TaskStore) {
+	for _, task := range store.Tasks {
+		if task.Status == tasks.StatusTodo {
+			fmt.Printf("\nID задачи: %d\nОписание задачи: %s\nСтатус выполнения: %s\nДата создания: %s\nДата обновления: %s\n", task.ID, task.Description, task.Status, task.CreatedAt, task.UpdatedAt)
+		}
+	}
+}
 
-// func getAllInProgress() {
-// 	for {
-// 		input := ScanUserInput()
-// 	}
-// }
+func getAllInProgress(store tasks.TaskStore) {
+	for _, task := range store.Tasks {
+		if task.Status == tasks.StatusInProgress {
+			fmt.Printf("\nID задачи: %d\nОписание задачи: %s\nСтатус выполнения: %s\nДата создания: %s\nДата обновления: %s\n", task.ID, task.Description, task.Status, task.CreatedAt, task.UpdatedAt)
+		}
+	}
+}
 
 func writeFile(filename string, store tasks.TaskStore) {
 	jsonData, err := json.MarshalIndent(store, "", "  ")
